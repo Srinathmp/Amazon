@@ -11,3 +11,4 @@ https://www.geeksforgeeks.org/python-tkinter-entry-widget/ <br>
 https://www.activestate.com/resources/quick-reads/how-to-add-images-in-tkinter/ <br>
 
 <img src="Screenshot(143).png" alt="tkinter output" height="500" width="350" title="basic amazon"> 
+![basic amazon](Screenshot(143).png)
