@@ -18,7 +18,7 @@ class product:
         print("Product Name: ", self.product_name)
         print("Product Price: ", self.product_price)
         print("Note : Current stock of this product :=", self.product_count)
-        return "Product Id: "+str(self.product_id)+"\nProduct Name: "+str(self.product_name)+"\nProduct Price: "+str(self.product_price)+"\nCurrent Stock: "+str(self.product_count)+"\n****************************************"
+        return "Product Id: "+str(self.product_id)+"\nProduct Name: "+str(self.product_name)+"\nProduct Price: "+str(self.product_price)+"\nCurrent Stock: "+str(self.product_count)+"\n"
         # Need not display the stock details, only used at the backened for the cart management
 
     def update_product_info(self, pro_name, pro_price, prod_stock_count):
@@ -193,7 +193,7 @@ def print_cart_products():
         # (aps) Also prints the stock details notifing the user about the current status of the product
         return_text = return_text + "\n" + \
             inventory1.get_product_info_from_inventory(
-                id) + "\nCount: " + str(cart_prods[id]) + "\n"
+                id) + "Count: " + str(cart_prods[id]) + "\n"
     return return_text
 # product1 = product(123,"watch",1500.00,23)
 # print(product1.get_product_info()
