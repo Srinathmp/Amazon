@@ -111,6 +111,7 @@ class inventory:
                 else:
                     arg_product_count = req_prod.product_count - \
                         int(prod_stock_decrem)
+                    cart1.reset_reduced_stock(product_id, arg_product_count)
                     # (aps)
                     ### Also call a function here to check whether the products in the cart have to removed because the stock has become 0 now ###
                     #############################################################################
@@ -183,6 +184,11 @@ class cart:
                 del self.cart_products[product_id]
             # print("Product with Id = ",product_id," deleted")
             self.cart_count -= 1
+
+    def reset_reduced_stock(self, product_id, new_count):
+        if product_id in list(self.cart_products.keys()):
+            if(self.cart_products[product_id] > new_count):
+                self.cart_products[product_id] = new_count
 
 
 def print_cart_products():
