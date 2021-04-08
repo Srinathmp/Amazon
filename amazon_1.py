@@ -18,7 +18,7 @@ class product:
         print("Product Name: ", self.product_name)
         print("Product Price: ", self.product_price)
         print("Note : Current stock of this product :=", self.product_count)
-        return "Product Id: "+str(self.product_id)+"\nProduct Name: "+str(self.product_name)+"\nProduct Price: "+str(self.product_price)
+        return "Product Id: "+str(self.product_id)+"\nProduct Name: "+str(self.product_name)+"\nProduct Price: "+str(self.product_price)+"\nCurrent Stock: "+str(self.product_count)+"\n****************************************"
         # Need not display the stock details, only used at the backened for the cart management
 
     def update_product_info(self, pro_name, pro_price, prod_stock_count):
@@ -26,6 +26,8 @@ class product:
         self.product_price = pro_price
         print("\n\n", prod_stock_count)
         self.product_count = prod_stock_count
+        insert_into_inventory_disp_box()
+        insert_into_text_box()
         # print("Enter the corresponding number to update attributes \n 1: Product Name \n 2: Product Price \n")
         # choice = int(input())
         # if(choice == 1):
@@ -133,7 +135,7 @@ class inventory:
         return_text = ""
         for id in self.inventory_products:
             return_text = return_text + "\n" + \
-                self.inventory_products[id].get_product_info() + "\n"
+                self.inventory_products[id].get_product_info()
             # print("Product count :",self.inventory_products[id].product_count)
         return return_text
 
@@ -336,6 +338,8 @@ def delete_submit():
     inventory1.delete_product_in_inventory(id)
     # inventory1.list_all_products_in_inventory()
     insert_into_inventory_disp_box()
+    cart1.delete_product_in_cart(id)
+    insert_into_text_box()
 
     delete_product_id_var.set("")
     delete_product_id_entry.delete(0, "end")
@@ -461,7 +465,6 @@ def leBron():
 def kobe():
     cart1.add_product_to_cart(7)
     insert_into_text_box()
-
 # ----------------------------------------------------------
 
 
@@ -470,7 +473,6 @@ im1_btn = tk.Button(root, text='Add To Cart ❤', command=curry)
 im2_btn = tk.Button(root, text='Add To Cart ❤', command=air_jordan)
 im3_btn = tk.Button(root, text='Add To Cart ❤', command=kobe)
 im4_btn = tk.Button(root, text='Add To Cart ❤', command=leBron)
-
 
 # images----------------------------------------------------
 image1 = Image.open("curry.jpg")
