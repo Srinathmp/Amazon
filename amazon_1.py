@@ -2,6 +2,7 @@ import tkinter.scrolledtext as st
 from PIL import Image, ImageTk
 from tkinter.ttk import *
 import tkinter as tk
+import tkinter.messagebox as tkMesssageBox
 
 
 class product:
@@ -146,16 +147,24 @@ class inventory:
 class cart:
     def __init__(self):
         self.cart_count = 0
-        self.cart_products_ids = []
+        #self.cart_products_ids = []
+        self.cart_products = {}
 
     def add_product_to_cart(self, product_id):
         # Before adding to the cart check the stock of the item to be added to the cart
         product_id = int(product_id)
-        # if(inventory1.get_product_count_from_inventory(product_id) > 0):
-        self.cart_products_ids.append(product_id)
+        if product_id in list(self.cart_products.keys()):
+            stock_left = inventory1.get_product_count_from_inventory(
+                product_id)
+            if(self.cart_products[product_id] < stock_left):
+                self.cart_products[product_id] += 1
+            else:
+                error_msg = "Only " + str(stock_left) + " items are in stock!"
+                tkMesssageBox.showerror("Limited Stock!", error_msg)
+        else:
+            self.cart_products[product_id] = 1
+        # self.cart_products_ids.append(product_id)
         self.cart_count += 1
-        # else:
-        #     print("Sorry! This product is sold out!")
 
     def list_all_products_in_cart(self):
         print("Number of products in cart: ", self.cart_count,
@@ -163,23 +172,26 @@ class cart:
         # for id in self.cart_products_ids:
         # prod = inventory_p.inventory_products[id]
         # inventory1.inventory_products[id].get_product_info()
-        return list(self.cart_products_ids)
+        return self.cart_products
 
     def delete_product_in_cart(self, product_id):
-        if product_id in self.cart_products_ids:
-            self.cart_products_ids.remove(product_id)
+        if product_id in list(self.cart_products.keys()):
+            self.cart_products[product_id] -= 1
+            if self.cart_products[product_id] == 0:
+                del self.cart_products[product_id]
             # print("Product with Id = ",product_id," deleted")
             self.cart_count -= 1
 
 
 def print_cart_products():
     print("The products in you cart are")
-    cart_pro_ids = cart1.list_all_products_in_cart()
+    cart_prods = cart1.list_all_products_in_cart()
     return_text = ""
-    for id in cart_pro_ids:
+    for id in list(cart_prods.keys()):
         # (aps) Also prints the stock details notifing the user about the current status of the product
         return_text = return_text + "\n" + \
-            inventory1.get_product_info_from_inventory(id) + "\n"
+            inventory1.get_product_info_from_inventory(
+                id) + "\nCount: " + str(cart_prods[id]) + "\n"
     return return_text
 # product1 = product(123,"watch",1500.00,23)
 # print(product1.get_product_info()
@@ -449,6 +461,7 @@ def leBron():
 def kobe():
     cart1.add_product_to_cart(7)
     insert_into_text_box()
+
 # ----------------------------------------------------------
 
 
@@ -457,6 +470,7 @@ im1_btn = tk.Button(root, text='Add To Cart ❤', command=curry)
 im2_btn = tk.Button(root, text='Add To Cart ❤', command=air_jordan)
 im3_btn = tk.Button(root, text='Add To Cart ❤', command=kobe)
 im4_btn = tk.Button(root, text='Add To Cart ❤', command=leBron)
+
 
 # images----------------------------------------------------
 image1 = Image.open("curry.jpg")
