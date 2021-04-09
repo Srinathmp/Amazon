@@ -558,10 +558,13 @@ text_area = st.ScrolledText(root,
 
 
 def insert_into_text_box():
+    text_area.configure(state ='normal')
     text_area.delete("1.0", "end")
     text = print_cart_products()
     # print("text=",text)
     text_area.insert(tk.INSERT, text)
+    text_area.configure(state ='disabled')
+
 # ------------------------------------------------------------------------------
 
 
@@ -577,10 +580,13 @@ text_area_inventory = st.ScrolledText(root,
 
 
 def insert_into_inventory_disp_box():
+    text_area_inventory.configure(state ='normal')
     text_area_inventory.delete("1.0", "end")
     text = inventory1.list_all_products_in_inventory()
     # print("text=",text)
     text_area_inventory.insert(tk.INSERT, text)
+    text_area_inventory.configure(state ='disabled')
+
 # ------------------------------------------------------------------------------
 
 
@@ -656,7 +662,7 @@ btn1.grid(row=20, column=5)
 insert_into_inventory_disp_box()
 
 # Making the text read only
-# text_area.configure(state ='disabled')
+text_area.configure(state ='disabled')
 # Execute Tkinter
 # <<<<<<< patch-3
 # root.mainloop()
