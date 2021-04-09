@@ -27,12 +27,13 @@ class product:
         print("\n\n", prod_stock_count)
         self.product_count = prod_stock_count
         if(self.product_count == 0):
-            ### removing product from the cart as it is out of stock
+            # removing product from the cart as it is out of stock
             cart1.delete_product_in_cart(self.product_id)
             insert_into_text_box()
-            notification_text = "\nSorry!, the product " + str(self.product_name) + " is out of stock\n"
-            text_area.insert(tk.INSERT,notification_text)
-            print("Sorry!, the product",self.product_name,"is out of stock")
+            notification_text = "\nSorry!, the product " + \
+                str(self.product_name) + " is out of stock\n"
+            text_area.insert(tk.INSERT, notification_text)
+            print("Sorry!, the product", self.product_name, "is out of stock")
             inventory1.delete_product_in_inventory(self.product_id)
             insert_into_inventory_disp_box()
         else:
@@ -169,6 +170,9 @@ class cart:
         if product_id in list(self.cart_products.keys()):
             stock_left = inventory1.get_product_count_from_inventory(
                 product_id)
+            if(stock_left == 0):
+                error_msg = "The product is currently not in stock!"
+                tkMesssageBox.showerror("Out of Stock!", error_msg)
             if(self.cart_products[product_id] < stock_left):
                 self.cart_products[product_id] += 1
             else:
@@ -628,10 +632,10 @@ insert_into_inventory_disp_box()
 # Making the text read only
 # text_area.configure(state ='disabled')
 # Execute Tkinter
-#<<<<<<< patch-3
-#root.mainloop() 
+# <<<<<<< patch-3
+# root.mainloop()
 
 
-#=======
+# =======
 root.mainloop()
-#>>>>>>> main
+# >>>>>>> main
