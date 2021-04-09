@@ -26,15 +26,16 @@ class product:
         self.product_price = pro_price
         print("\n\n", prod_stock_count)
         self.product_count = prod_stock_count
-        if(self.product_count == 0):
+        cart_prods = cart1.list_all_products_in_cart()
+        if((self.product_id in list(cart_prods.keys())) and self.product_count == 0):
             ### removing product from the cart as it is out of stock
             cart1.delete_product_in_cart(self.product_id)
             insert_into_text_box()
             notification_text = "\nSorry!, the product " + str(self.product_name) + " is out of stock\n"
             text_area.insert(tk.INSERT,notification_text)
             print("Sorry!, the product",self.product_name,"is out of stock")
-            inventory1.delete_product_in_inventory(self.product_id)
-            insert_into_inventory_disp_box()
+            # inventory1.delete_product_in_inventory(self.product_id)
+            # insert_into_inventory_disp_box()
         else:
             insert_into_inventory_disp_box()
             insert_into_text_box()
