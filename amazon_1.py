@@ -221,7 +221,7 @@ class cart:
                 # removing product from the cart as it is out of stock
                 cart1.remove_product_in_cart(product_id)
                 insert_into_text_box()
-                notification_text = "\nSorry!, the product " + \
+                notification_text = "\nSorry! The product " + \
                     str(product_name) + " is out of stock\n"
                 text_area.insert(tk.INSERT, notification_text)
                 print("Sorry!, the product",
