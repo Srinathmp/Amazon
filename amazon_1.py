@@ -26,8 +26,18 @@ class product:
         self.product_price = pro_price
         print("\n\n", prod_stock_count)
         self.product_count = prod_stock_count
-        insert_into_inventory_disp_box()
-        insert_into_text_box()
+        if(self.product_count == 0):
+            ### removing product from the cart as it is out of stock
+            cart1.delete_product_in_cart(self.product_id)
+            insert_into_text_box()
+            notification_text = "\nSorry!, the product " + str(self.product_name) + " is out of stock\n"
+            text_area.insert(tk.INSERT,notification_text)
+            print("Sorry!, the product",self.product_name,"is out of stock")
+            inventory1.delete_product_in_inventory(self.product_id)
+            insert_into_inventory_disp_box()
+        else:
+            insert_into_inventory_disp_box()
+            insert_into_text_box()
         # print("Enter the corresponding number to update attributes \n 1: Product Name \n 2: Product Price \n")
         # choice = int(input())
         # if(choice == 1):
@@ -618,4 +628,10 @@ insert_into_inventory_disp_box()
 # Making the text read only
 # text_area.configure(state ='disabled')
 # Execute Tkinter
+#<<<<<<< patch-3
+#root.mainloop() 
+
+
+#=======
 root.mainloop()
+#>>>>>>> main
