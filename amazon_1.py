@@ -225,7 +225,7 @@ class cart:
                     str(product_name) + " is out of stock\n"
                 text_area.insert(tk.INSERT, notification_text)
                 print("Sorry!, the product",
-                      self.product_name, "is out of stock")
+                      product_name, "is out of stock")
             else:
                 if(self.cart_products[product_id] > new_count):
                     self.cart_products[product_id] = new_count
