@@ -25,20 +25,26 @@ class product:
         self.product_name = pro_name
         self.product_price = pro_price
         print("\n\n", prod_stock_count)
+        old_count = self.product_count
         self.product_count = prod_stock_count
-        cart_prods = cart1.list_all_products_in_cart()
-        if((self.product_id in list(cart_prods.keys())) and self.product_count == 0):
-            ### removing product from the cart as it is out of stock
-            cart1.delete_product_in_cart(self.product_id)
-            insert_into_text_box()
-            notification_text = "\nSorry!, the product " + str(self.product_name) + " is out of stock\n"
-            text_area.insert(tk.INSERT,notification_text)
-            print("Sorry!, the product",self.product_name,"is out of stock")
-            # inventory1.delete_product_in_inventory(self.product_id)
-            # insert_into_inventory_disp_box()
-        else:
-            insert_into_inventory_disp_box()
-            insert_into_text_box()
+        print("OLD count : ", old_count, "new count : ", self.product_count)
+        if(old_count > self.product_count):
+            cart1.reset_reduced_stock(
+                self.product_id, self.product_count, self.product_name)
+        # cart_prods = cart1.list_all_products_in_cart()
+        # if((self.product_id in list(cart_prods.keys())) and self.product_count == 0):
+        #     # removing product from the cart as it is out of stock
+        #     cart1.delete_product_in_cart(self.product_id)
+        #     insert_into_text_box()
+        #     notification_text = "\nSorry!, the product " + \
+        #         str(self.product_name) + " is out of stock\n"
+        #     text_area.insert(tk.INSERT, notification_text)
+        #     print("Sorry!, the product", self.product_name, "is out of stock")
+        #     # inventory1.delete_product_in_inventory(self.product_id)
+        #     # insert_into_inventory_disp_box()
+        # else:
+        insert_into_inventory_disp_box()
+        insert_into_text_box()
         # print("Enter the corresponding number to update attributes \n 1: Product Name \n 2: Product Price \n")
         # choice = int(input())
         # if(choice == 1):
@@ -108,7 +114,7 @@ class inventory:
                 arg_product_price = req_prod.product_price
             else:
                 arg_product_price = float(product_price)
-            ### (cart_managing - aps)
+            # (cart_managing - aps)
             if(prod_stock_increm == ""):
                 arg_product_count = req_prod.product_count
             else:
@@ -122,7 +128,7 @@ class inventory:
                 else:
                     arg_product_count = req_prod.product_count - \
                         int(prod_stock_decrem)
-                    cart1.reset_reduced_stock(product_id, arg_product_count)
+                    # cart1.reset_reduced_stock(product_id, arg_product_count)
                     # (aps)
                     ### Also call a function here to check whether the products in the cart have to removed because the stock has become 0 now ###
                     #############################################################################
@@ -161,24 +167,30 @@ class inventory:
 class cart:
     def __init__(self):
         self.cart_count = 0
-        #self.cart_products_ids = []
+        # self.cart_products_ids = []
         self.cart_products = {}
 
     def add_product_to_cart(self, product_id):
         # Before adding to the cart check the stock of the item to be added to the cart
         product_id = int(product_id)
-        if product_id in list(self.cart_products.keys()):
-            stock_left = inventory1.get_product_count_from_inventory(
-                product_id)
-            if(self.cart_products[product_id] < stock_left):
-                self.cart_products[product_id] += 1
-            else:
-                error_msg = "Only " + str(stock_left) + " items are in stock!"
-                tkMesssageBox.showerror("Limited Stock!", error_msg)
+        stock_left = inventory1.get_product_count_from_inventory(
+            product_id)
+        if(stock_left == 0):
+            error_msg = "The product is currently not in stock!"
+            tkMesssageBox.showerror("Out of Stock!", error_msg)
         else:
-            self.cart_products[product_id] = 1
+            if product_id in list(self.cart_products.keys()):
+                if(self.cart_products[product_id] < stock_left):
+                    self.cart_products[product_id] += 1
+                    self.cart_count += 1
+                else:
+                    error_msg = "Only " + \
+                        str(stock_left) + " items are in stock!"
+                    tkMesssageBox.showerror("Limited Stock!", error_msg)
+            else:
+                self.cart_products[product_id] = 1
+                self.cart_count += 1
         # self.cart_products_ids.append(product_id)
-        self.cart_count += 1
 
     def list_all_products_in_cart(self):
         print("Number of products in cart: ", self.cart_count,
@@ -196,10 +208,27 @@ class cart:
             # print("Product with Id = ",product_id," deleted")
             self.cart_count -= 1
 
-    def reset_reduced_stock(self, product_id, new_count):
+    def remove_product_in_cart(self, product_id):
         if product_id in list(self.cart_products.keys()):
-            if(self.cart_products[product_id] > new_count):
-                self.cart_products[product_id] = new_count
+            self.cart_count -= self.cart_products[product_id]
+            del self.cart_products[product_id]
+
+    def reset_reduced_stock(self, product_id, new_count, product_name):
+        print("IN RESET_REDUCE. ID, NEWCOUNT, NAME : ",
+              product_id, new_count, product_name)
+        if product_id in list(self.cart_products.keys()):
+            if(new_count == 0):
+                # removing product from the cart as it is out of stock
+                cart1.remove_product_in_cart(product_id)
+                insert_into_text_box()
+                notification_text = "\nSorry! The product " + \
+                    str(product_name) + " is out of stock\n"
+                text_area.insert(tk.INSERT, notification_text)
+                print("Sorry!, the product",
+                      self.product_name, "is out of stock")
+            else:
+                if(self.cart_products[product_id] > new_count):
+                    self.cart_products[product_id] = new_count
 
 
 def print_cart_products():
@@ -629,10 +658,10 @@ insert_into_inventory_disp_box()
 # Making the text read only
 # text_area.configure(state ='disabled')
 # Execute Tkinter
-#<<<<<<< patch-3
-#root.mainloop() 
+# <<<<<<< patch-3
+# root.mainloop()
 
 
-#=======
+# =======
 root.mainloop()
-#>>>>>>> main
+# >>>>>>> main
