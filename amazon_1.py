@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 from tkinter.ttk import *
 import tkinter as tk
 import tkinter.messagebox as tkMesssageBox
-
+import sys
 
 class product:
     def __init__(self, product_id, product_name, product_price, product_count):
@@ -78,13 +78,19 @@ class inventory:
         # else:
         #     print("Product Id already exists ,Please enter valid product Id: ")
         #     return
-        product_id = int(product_id)
-        product_price = float(product_price)
-        product_count = int(product_stock)
-        composite_product = product(
-            product_id, product_name, product_price, product_count)
-        self.inventory_products[product_id] = composite_product
-        self.inventory_count += 1
+        try:
+            product_id = int(product_id)
+            product_price = float(product_price)
+            product_count = int(product_stock)
+            composite_product = product(
+                product_id, product_name, product_price, product_count)
+            self.inventory_products[product_id] = composite_product
+            self.inventory_count += 1
+        except Exception as e:
+            print("In adding product to inventory ", e.__class__, "occurred.\n")
+            error_msg = "Please enter valid values for fields \nValid types: Id:Integer Name:String Price:float StockQty:Integer\nAll fields are mandatory!"
+            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            return
 
     def get_product_info_from_inventory(self, product_id):
         # product_id = int(input("Enter the product Id to get info about:"))
@@ -101,45 +107,55 @@ class inventory:
             return
 
     def update_product_in_inventory(self, product_id, product_name, product_price, prod_stock_increm, prod_stock_decrem):
-        # product_id = int(input("Enter the product Id to update info about:"))
-        product_id = int(product_id)
-        list_of_product_ids = list(self.inventory_products.keys())
-        if(product_id in list_of_product_ids):
-            req_prod = self.inventory_products[product_id]
-            if(product_name == ""):
-                arg_product_name = req_prod.product_name
-            else:
-                arg_product_name = product_name
-            if(product_price == ""):
-                arg_product_price = req_prod.product_price
-            else:
-                arg_product_price = float(product_price)
-            # (cart_managing - aps)
-            if(prod_stock_increm == ""):
-                arg_product_count = req_prod.product_count
-            else:
-                arg_product_count = req_prod.product_count + \
-                    int(prod_stock_increm)
-            if(prod_stock_decrem == "" and prod_stock_increm == ""):
-                arg_product_count = req_prod.product_count
-            elif(prod_stock_increm == ""):
-                if(int(prod_stock_decrem) > req_prod.product_count):
-                    print("Error: update value increases beyond current stock")
+        try:
+            # product_id = int(input("Enter the product Id to update info about:"))
+            product_id = int(product_id)
+            list_of_product_ids = list(self.inventory_products.keys())
+            if(product_id in list_of_product_ids):
+                req_prod = self.inventory_products[product_id]
+                if(product_name == ""):
+                    arg_product_name = req_prod.product_name
                 else:
-                    arg_product_count = req_prod.product_count - \
-                        int(prod_stock_decrem)
-                    # cart1.reset_reduced_stock(product_id, arg_product_count)
-                    # (aps)
-                    ### Also call a function here to check whether the products in the cart have to removed because the stock has become 0 now ###
-                    #############################################################################
-            elif(prod_stock_decrem != "" and prod_stock_increm != ""):
-                arg_product_count = arg_product_count - int(prod_stock_increm)
-                print("Please enter either increase stock or decrease stock")
+                    arg_product_name = product_name
+                if(product_price == ""):
+                    arg_product_price = req_prod.product_price
+                else:
+                    arg_product_price = float(product_price)
+                # (cart_managing - aps)
+                if(prod_stock_increm == ""):
+                    arg_product_count = req_prod.product_count
+                else:
+                    arg_product_count = req_prod.product_count + \
+                        int(prod_stock_increm)
+                if(prod_stock_decrem == "" and prod_stock_increm == ""):
+                    arg_product_count = req_prod.product_count
+                elif(prod_stock_increm == ""):
+                    if(int(prod_stock_decrem) > req_prod.product_count):
+                        error_msg = "Update value increases beyond current stock"
+                        tkMesssageBox.showerror("Error! Please enter values within proper range", error_msg)
+                        print("Error: update value increases beyond current stock")
+                    else:
+                        arg_product_count = req_prod.product_count - \
+                            int(prod_stock_decrem)
+                        # cart1.reset_reduced_stock(product_id, arg_product_count)
+                        # (aps)
+                        ### Also call a function here to check whether the products in the cart have to removed because the stock has become 0 now ###
+                        #############################################################################
+                elif(prod_stock_decrem != "" and prod_stock_increm != ""):
+                    arg_product_count = arg_product_count - int(prod_stock_increm)
+                    error_msg = "Please enter either increase stock or decrease stock field and not both simultaneously"
+                    tkMesssageBox.showerror("Alert! Invalid operation", error_msg)
+                    print("Please enter either increase stock or decrease stock")
 
-            req_prod.update_product_info(
-                arg_product_name, arg_product_price, arg_product_count)
-        else:
-            print("Product Id does not exists ,Please enter valid product Id: ")
+                req_prod.update_product_info(
+                    arg_product_name, arg_product_price, arg_product_count)
+            else:
+                print("Product Id does not exists ,Please enter valid product Id: ")
+                return
+        except Exception as e:
+            print("In updating product to inventory ", e.__class__, "occurred.\n")
+            error_msg = "Please enter valid values for fields \nValid types: Id:Integer Name:String Price:float StockQty:Integer"
+            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
             return
 
     def get_product_count_from_inventory(self, product_id):
@@ -158,10 +174,20 @@ class inventory:
         return return_text
 
     def delete_product_in_inventory(self, product_id):
-        # product_id = int(input("Enter the product Id of the product to be deleted: "))
-        self.inventory_products.pop(product_id)
-        print("Product with Id = ", product_id, " deleted")
-        self.inventory_count -= 1
+        try:
+            product_id = int(product_id)
+            # product_id = int(input("Enter the product Id of the product to be deleted: "))
+            self.inventory_products.pop(product_id)
+            print("Product with Id = ", product_id, " deleted")
+            self.inventory_count -= 1
+        except Exception as e:
+            print("In deleting product in inventory ", e.__class__, "occurred.\n")
+            error_msg = "Please enter valid values for fields \nValid types: Id:Integer"
+            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            return
+
+        
+            
 
 
 class cart:
@@ -201,12 +227,17 @@ class cart:
         return self.cart_products
 
     def delete_product_in_cart(self, product_id):
-        if product_id in list(self.cart_products.keys()):
-            self.cart_products[product_id] -= 1
-            if self.cart_products[product_id] == 0:
-                del self.cart_products[product_id]
-            # print("Product with Id = ",product_id," deleted")
-            self.cart_count -= 1
+        if(product_id!=""):
+            if product_id in list(self.cart_products.keys()):
+                self.cart_products[product_id] -= 1
+                if self.cart_products[product_id] == 0:
+                    del self.cart_products[product_id]
+                # print("Product with Id = ",product_id," deleted")
+                self.cart_count -= 1
+        else:
+            error_msg = "Please enter valid value for product Id"
+            tkMesssageBox.showerror("Invalid Entry", error_msg)
+            return
 
     def remove_product_in_cart(self, product_id):
         if product_id in list(self.cart_products.keys()):
@@ -223,7 +254,8 @@ class cart:
                 insert_into_text_box()
                 notification_text = "\nSorry! The product " + \
                     str(product_name) + " is out of stock\n"
-                text_area.insert(tk.INSERT, notification_text)
+                #text_area.insert(tk.INSERT, notification_text)
+                tkMesssageBox.showerror("Out of stock :-(", notification_text)
                 print("Sorry!, the product",
                       product_name, "is out of stock")
             else:
@@ -324,15 +356,20 @@ def submit():
     price = product_price_var.get()
     count = product_count_var.get()
 
-    ### The below prints are just for verification, printed on the terminal, replace with the success or failure notification popup ###
-    print("The id is : " + id)
-    print("The name is : " + name)
-    print("The price is : " + price)
-    print("The stock quantity is : " + count)
+    if(id!="" and name!="" and price!="" and count!=""):
+        ### The below prints are just for verification, printed on the terminal, replace with the success or failure notification popup ###
+        print("The id is : " + id)
+        print("The name is : " + name)
+        print("The price is : " + price)
+        print("The stock quantity is : " + count)
 
-    inventory1.add_product_to_inventory(id, name, price, count)
-    # inventory1.list_all_products_in_inventory()
-    insert_into_inventory_disp_box()
+        inventory1.add_product_to_inventory(id, name, price, count)
+        # inventory1.list_all_products_in_inventory()
+        insert_into_inventory_disp_box()
+    else:
+        error_msg = "All fields are mandatory! Please enter all fields with valid values."
+        tkMesssageBox.showerror("Enter all fields!", error_msg)
+        return
 
     product_id_var.set("")
     product_name_var.set("")
@@ -378,14 +415,18 @@ def update_submit():
 
 def delete_submit():
     id = delete_product_id_var.get()
-
-    # print("The id is : " + id)
-    id = int(id)
-    inventory1.delete_product_in_inventory(id)
-    # inventory1.list_all_products_in_inventory()
-    insert_into_inventory_disp_box()
-    cart1.delete_product_in_cart(id)
-    insert_into_text_box()
+    if(id!=""):
+        # print("The id is : " + id)
+        # id = int(id)
+        inventory1.delete_product_in_inventory(id)
+        # inventory1.list_all_products_in_inventory()
+        insert_into_inventory_disp_box()
+        cart1.delete_product_in_cart(id)
+        insert_into_text_box()
+    else:
+        error_msg = "Field cannot be empty!\nPlease enter valid value for product Id"
+        tkMesssageBox.showerror("Invalid Entry", error_msg)
+        return
 
     delete_product_id_var.set("")
     delete_product_id_entry.delete(0, "end")
@@ -393,9 +434,36 @@ def delete_submit():
 
 def delete_cart_product():
     id = delete_cart_product_id_var.get()
-    id = int(id)
-    cart1.delete_product_in_cart(id)
-    insert_into_text_box()
+    if(id!=""):
+        try:
+            id = int(id)
+            cart1.delete_product_in_cart(id)
+            insert_into_text_box()
+        except Exception as e:
+            print("In deleting product in cart", e.__class__, "occurred.\n")
+            error_msg = "Please enter valid values for fields \nValid types: Id:Integer Name:String Price:float StockQty:Integer"
+            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            return
+    else:
+        error_msg = "Field cannot be empty!\nPlease enter valid value for product Id"
+        tkMesssageBox.showerror("Invalid Entry", error_msg)
+        return
+
+### Used to process the total cost of the individual items and finally display the total of all products in the cart
+def compute_total_cost_of_products():
+    cart_prods = cart1.list_all_products_in_cart()
+    total = 0 
+    text_message = ""
+    for id in list(cart_prods.keys()):
+        req_prod = inventory1.inventory_products[id]
+        single_prod_total = (int(req_prod.product_price)) * (cart_prods[id])
+        text_message += "Total of  " + req_prod.product_name + "  is = " + str(single_prod_total) + "\n"
+        total += single_prod_total
+    
+    text_message += "\n\n***Overall TOTAL*** is = " + str(total)
+    tkMesssageBox.showerror("Your total amount for cart products", text_message)
+    return 
+
 # -------------------------------------------------------------------------------------------------------------
 
 
@@ -476,6 +544,8 @@ sub_btn_delete = tk.Button(root, text='Submit', command=delete_submit)
 btn1 = tk.Button(root, text='Quit !', command=root.destroy)
 sub_btn_delete_cart = tk.Button(
     root, text='Submit', command=delete_cart_product)
+### To compute the total amount of the current items existing in the cart 
+total_cost_button = tk.Button(root, text='Compute Total', command=compute_total_cost_of_products)
 # -------------------------------------
 # Image labels-------------------------------------
 im0_label = tk.Label(
@@ -604,7 +674,9 @@ Cart_label.place(x=700, y=60)
 text_area.place(x=600, y=85)
 delete_cart_product_label.place(x=600, y=350)
 delete_cart_product_entry.place(x=750, y=350)
-sub_btn_delete_cart.place(x=700, y=385)
+sub_btn_delete_cart.place(x=650, y=385)
+### compute total button
+total_cost_button.place(x=710, y=385)
 # ------------------
 
 # display inventory products-----------------
