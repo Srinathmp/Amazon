@@ -131,6 +131,8 @@ class inventory:
                     arg_product_count = req_prod.product_count
                 elif(prod_stock_increm == ""):
                     if(int(prod_stock_decrem) > req_prod.product_count):
+                        error_msg = "Update value increases beyond current stock"
+                        tkMesssageBox.showerror("Error! Please enter values within proper range", error_msg)
                         print("Error: update value increases beyond current stock")
                     else:
                         arg_product_count = req_prod.product_count - \
@@ -141,6 +143,8 @@ class inventory:
                         #############################################################################
                 elif(prod_stock_decrem != "" and prod_stock_increm != ""):
                     arg_product_count = arg_product_count - int(prod_stock_increm)
+                    error_msg = "Please enter either increase stock or decrease stock field and not both simultaneously"
+                    tkMesssageBox.showerror("Alert! Invalid operation", error_msg)
                     print("Please enter either increase stock or decrease stock")
 
                 req_prod.update_product_info(
@@ -250,7 +254,8 @@ class cart:
                 insert_into_text_box()
                 notification_text = "\nSorry! The product " + \
                     str(product_name) + " is out of stock\n"
-                text_area.insert(tk.INSERT, notification_text)
+                #text_area.insert(tk.INSERT, notification_text)
+                tkMesssageBox.showerror("Out of stock :-(", notification_text)
                 print("Sorry!, the product",
                       product_name, "is out of stock")
             else:
@@ -443,6 +448,22 @@ def delete_cart_product():
         error_msg = "Field cannot be empty!\nPlease enter valid value for product Id"
         tkMesssageBox.showerror("Invalid Entry", error_msg)
         return
+
+
+### Used to process the total cost of the individual items and finally display the total of all products in the cart
+def compute_total_cost_of_products():
+    cart_prods = cart1.list_all_products_in_cart()
+    total = 0 
+    text_message = ""
+    for id in list(cart_prods.keys()):
+        req_prod = inventory1.inventory_products[id]
+        single_prod_total = (int(req_prod.product_price)) * (cart_prods[id])
+        text_message += "Total of  " + req_prod.product_name + "  is = " + str(single_prod_total) + "\n"
+        total += single_prod_total
+    
+    text_message += "\n\n***Overall TOTAL*** is = " + str(total)
+    tkMesssageBox.showerror("Your total amount for cart products", text_message)
+    return 
 # -------------------------------------------------------------------------------------------------------------
 
 
@@ -523,6 +544,8 @@ sub_btn_delete = tk.Button(root, text='Submit', command=delete_submit)
 btn1 = tk.Button(root, text='Quit !', command=root.destroy)
 sub_btn_delete_cart = tk.Button(
     root, text='Submit', command=delete_cart_product)
+### To compute the total amount of the current items existing in the cart 
+total_cost_button = tk.Button(root, text='Compute Total', command=compute_total_cost_of_products)
 # -------------------------------------
 # Image labels-------------------------------------
 im0_label = tk.Label(
@@ -651,7 +674,9 @@ Cart_label.place(x=700, y=60)
 text_area.place(x=600, y=85)
 delete_cart_product_label.place(x=600, y=350)
 delete_cart_product_entry.place(x=750, y=350)
-sub_btn_delete_cart.place(x=700, y=385)
+sub_btn_delete_cart.place(x=650, y=385)
+### compute total button
+total_cost_button.place(x=710, y=385)
 # ------------------
 
 # display inventory products-----------------
@@ -710,11 +735,6 @@ insert_into_inventory_disp_box()
 
 # Making the text read only
 text_area.configure(state ='disabled')
-# Execute Tkinter
-# <<<<<<< patch-3
-# root.mainloop()
 
-
-# =======
 root.mainloop()
-# >>>>>>> main
+
