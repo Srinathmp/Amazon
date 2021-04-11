@@ -746,14 +746,11 @@ btn1.grid(row=20, column=5)
 insert_into_inventory_disp_box()
 
 # Making the text read only
-<< << << < HEAD
 text_area.configure(state='disabled')
 # Execute Tkinter
 # <<<<<<< patch-3
 # root.mainloop()
 
-== == == =
 text_area.configure(state='disabled')
->>>>>> > 81cf754584292e9e5af5ae6ee33ba328e949b7b7
 
 root.mainloop()
