@@ -5,6 +5,7 @@ import tkinter as tk
 import tkinter.messagebox as tkMesssageBox
 import sys
 
+
 class product:
     def __init__(self, product_id, product_name, product_price, product_count):
         self.product_id = product_id
@@ -87,9 +88,11 @@ class inventory:
             self.inventory_products[product_id] = composite_product
             self.inventory_count += 1
         except Exception as e:
-            print("In adding product to inventory ", e.__class__, "occurred.\n")
+            print("In adding product to inventory ",
+                  e.__class__, "occurred.\n")
             error_msg = "Please enter valid values for fields \nValid types: Id:Integer Name:String Price:float StockQty:Integer\nAll fields are mandatory!"
-            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            tkMesssageBox.showerror(
+                "Invalid values for fields entered!", error_msg)
             return
 
     def get_product_info_from_inventory(self, product_id):
@@ -140,7 +143,8 @@ class inventory:
                         ### Also call a function here to check whether the products in the cart have to removed because the stock has become 0 now ###
                         #############################################################################
                 elif(prod_stock_decrem != "" and prod_stock_increm != ""):
-                    arg_product_count = arg_product_count - int(prod_stock_increm)
+                    arg_product_count = arg_product_count - \
+                        int(prod_stock_increm)
                     print("Please enter either increase stock or decrease stock")
 
                 req_prod.update_product_info(
@@ -149,9 +153,11 @@ class inventory:
                 print("Product Id does not exists ,Please enter valid product Id: ")
                 return
         except Exception as e:
-            print("In updating product to inventory ", e.__class__, "occurred.\n")
+            print("In updating product to inventory ",
+                  e.__class__, "occurred.\n")
             error_msg = "Please enter valid values for fields \nValid types: Id:Integer Name:String Price:float StockQty:Integer"
-            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            tkMesssageBox.showerror(
+                "Invalid values for fields entered!", error_msg)
             return
 
     def get_product_count_from_inventory(self, product_id):
@@ -172,18 +178,18 @@ class inventory:
     def delete_product_in_inventory(self, product_id):
         try:
             product_id = int(product_id)
+            cart1.remove_product_in_cart(product_id)
             # product_id = int(input("Enter the product Id of the product to be deleted: "))
             self.inventory_products.pop(product_id)
             print("Product with Id = ", product_id, " deleted")
             self.inventory_count -= 1
         except Exception as e:
-            print("In deleting product in inventory ", e.__class__, "occurred.\n")
+            print("In deleting product in inventory ",
+                  e.__class__, "occurred.\n")
             error_msg = "Please enter valid values for fields \nValid types: Id:Integer"
-            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            tkMesssageBox.showerror(
+                "Invalid values for fields entered!", error_msg)
             return
-
-        
-            
 
 
 class cart:
@@ -222,8 +228,8 @@ class cart:
         # inventory1.inventory_products[id].get_product_info()
         return self.cart_products
 
-    def delete_product_in_cart(self, product_id):
-        if(product_id!=""):
+    def delete_product_in_cart(self, product_id):  # reduce count of product by 1
+        if(product_id != ""):
             if product_id in list(self.cart_products.keys()):
                 self.cart_products[product_id] -= 1
                 if self.cart_products[product_id] == 0:
@@ -235,7 +241,7 @@ class cart:
             tkMesssageBox.showerror("Invalid Entry", error_msg)
             return
 
-    def remove_product_in_cart(self, product_id):
+    def remove_product_in_cart(self, product_id):  # remove the entire product
         if product_id in list(self.cart_products.keys()):
             self.cart_count -= self.cart_products[product_id]
             del self.cart_products[product_id]
@@ -351,7 +357,7 @@ def submit():
     price = product_price_var.get()
     count = product_count_var.get()
 
-    if(id!="" and name!="" and price!="" and count!=""):
+    if(id != "" and name != "" and price != "" and count != ""):
         ### The below prints are just for verification, printed on the terminal, replace with the success or failure notification popup ###
         print("The id is : " + id)
         print("The name is : " + name)
@@ -410,7 +416,7 @@ def update_submit():
 
 def delete_submit():
     id = delete_product_id_var.get()
-    if(id!=""):
+    if(id != ""):
         # print("The id is : " + id)
         # id = int(id)
         inventory1.delete_product_in_inventory(id)
@@ -429,7 +435,7 @@ def delete_submit():
 
 def delete_cart_product():
     id = delete_cart_product_id_var.get()
-    if(id!=""):
+    if(id != ""):
         try:
             id = int(id)
             cart1.delete_product_in_cart(id)
@@ -437,7 +443,8 @@ def delete_cart_product():
         except Exception as e:
             print("In deleting product in cart", e.__class__, "occurred.\n")
             error_msg = "Please enter valid values for fields \nValid types: Id:Integer Name:String Price:float StockQty:Integer"
-            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            tkMesssageBox.showerror(
+                "Invalid values for fields entered!", error_msg)
             return
     else:
         error_msg = "Field cannot be empty!\nPlease enter valid value for product Id"
@@ -605,12 +612,12 @@ text_area = st.ScrolledText(root,
 
 
 def insert_into_text_box():
-    text_area.configure(state ='normal')
+    text_area.configure(state='normal')
     text_area.delete("1.0", "end")
     text = print_cart_products()
     # print("text=",text)
     text_area.insert(tk.INSERT, text)
-    text_area.configure(state ='disabled')
+    text_area.configure(state='disabled')
 
 # ------------------------------------------------------------------------------
 
@@ -627,12 +634,12 @@ text_area_inventory = st.ScrolledText(root,
 
 
 def insert_into_inventory_disp_box():
-    text_area_inventory.configure(state ='normal')
+    text_area_inventory.configure(state='normal')
     text_area_inventory.delete("1.0", "end")
     text = inventory1.list_all_products_in_inventory()
     # print("text=",text)
     text_area_inventory.insert(tk.INSERT, text)
-    text_area_inventory.configure(state ='disabled')
+    text_area_inventory.configure(state='disabled')
 
 # ------------------------------------------------------------------------------
 
@@ -709,7 +716,7 @@ btn1.grid(row=20, column=5)
 insert_into_inventory_disp_box()
 
 # Making the text read only
-text_area.configure(state ='disabled')
+text_area.configure(state='disabled')
 # Execute Tkinter
 # <<<<<<< patch-3
 # root.mainloop()
