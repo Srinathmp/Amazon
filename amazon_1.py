@@ -449,6 +449,7 @@ def delete_cart_product():
         tkMesssageBox.showerror("Invalid Entry", error_msg)
         return
 
+
 ### Used to process the total cost of the individual items and finally display the total of all products in the cart
 def compute_total_cost_of_products():
     cart_prods = cart1.list_all_products_in_cart()
@@ -463,7 +464,6 @@ def compute_total_cost_of_products():
     text_message += "\n\n***Overall TOTAL*** is = " + str(total)
     tkMesssageBox.showerror("Your total amount for cart products", text_message)
     return 
-
 # -------------------------------------------------------------------------------------------------------------
 
 
@@ -735,11 +735,6 @@ insert_into_inventory_disp_box()
 
 # Making the text read only
 text_area.configure(state ='disabled')
-# Execute Tkinter
-# <<<<<<< patch-3
-# root.mainloop()
 
-
-# =======
 root.mainloop()
-# >>>>>>> main
+
