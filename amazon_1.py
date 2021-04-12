@@ -5,6 +5,7 @@ import tkinter as tk
 import tkinter.messagebox as tkMesssageBox
 import sys
 
+
 class product:
     def __init__(self, product_id, product_name, product_price, product_count):
         self.product_id = product_id
@@ -87,9 +88,11 @@ class inventory:
             self.inventory_products[product_id] = composite_product
             self.inventory_count += 1
         except Exception as e:
-            print("In adding product to inventory ", e.__class__, "occurred.\n")
+            print("In adding product to inventory ",
+                  e.__class__, "occurred.\n")
             error_msg = "Please enter valid values for fields \nValid types: Id:Integer Name:String Price:float StockQty:Integer\nAll fields are mandatory!"
-            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            tkMesssageBox.showerror(
+                "Invalid values for fields entered!", error_msg)
             return
 
     def get_product_info_from_inventory(self, product_id):
@@ -132,7 +135,8 @@ class inventory:
                 elif(prod_stock_increm == ""):
                     if(int(prod_stock_decrem) > req_prod.product_count):
                         error_msg = "Update value increases beyond current stock"
-                        tkMesssageBox.showerror("Error! Please enter values within proper range", error_msg)
+                        tkMesssageBox.showerror(
+                            "Error! Please enter values within proper range", error_msg)
                         print("Error: update value increases beyond current stock")
                     else:
                         arg_product_count = req_prod.product_count - \
@@ -142,9 +146,11 @@ class inventory:
                         ### Also call a function here to check whether the products in the cart have to removed because the stock has become 0 now ###
                         #############################################################################
                 elif(prod_stock_decrem != "" and prod_stock_increm != ""):
-                    arg_product_count = arg_product_count - int(prod_stock_increm)
+                    arg_product_count = arg_product_count - \
+                        int(prod_stock_increm)
                     error_msg = "Please enter either increase stock or decrease stock field and not both simultaneously"
-                    tkMesssageBox.showerror("Alert! Invalid operation", error_msg)
+                    tkMesssageBox.showerror(
+                        "Alert! Invalid operation", error_msg)
                     print("Please enter either increase stock or decrease stock")
 
                 req_prod.update_product_info(
@@ -153,9 +159,11 @@ class inventory:
                 print("Product Id does not exists ,Please enter valid product Id: ")
                 return
         except Exception as e:
-            print("In updating product to inventory ", e.__class__, "occurred.\n")
+            print("In updating product to inventory ",
+                  e.__class__, "occurred.\n")
             error_msg = "Please enter valid values for fields \nValid types: Id:Integer Name:String Price:float StockQty:Integer"
-            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            tkMesssageBox.showerror(
+                "Invalid values for fields entered!", error_msg)
             return
 
     def get_product_count_from_inventory(self, product_id):
@@ -176,18 +184,18 @@ class inventory:
     def delete_product_in_inventory(self, product_id):
         try:
             product_id = int(product_id)
+            cart1.remove_product_in_cart(product_id)
             # product_id = int(input("Enter the product Id of the product to be deleted: "))
             self.inventory_products.pop(product_id)
             print("Product with Id = ", product_id, " deleted")
             self.inventory_count -= 1
         except Exception as e:
-            print("In deleting product in inventory ", e.__class__, "occurred.\n")
+            print("In deleting product in inventory ",
+                  e.__class__, "occurred.\n")
             error_msg = "Please enter valid values for fields \nValid types: Id:Integer"
-            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            tkMesssageBox.showerror(
+                "Invalid values for fields entered!", error_msg)
             return
-
-        
-            
 
 
 class cart:
@@ -226,8 +234,8 @@ class cart:
         # inventory1.inventory_products[id].get_product_info()
         return self.cart_products
 
-    def delete_product_in_cart(self, product_id):
-        if(product_id!=""):
+    def delete_product_in_cart(self, product_id):  # reduce count of product by 1
+        if(product_id != ""):
             if product_id in list(self.cart_products.keys()):
                 self.cart_products[product_id] -= 1
                 if self.cart_products[product_id] == 0:
@@ -239,7 +247,7 @@ class cart:
             tkMesssageBox.showerror("Invalid Entry", error_msg)
             return
 
-    def remove_product_in_cart(self, product_id):
+    def remove_product_in_cart(self, product_id):  # remove the entire product
         if product_id in list(self.cart_products.keys()):
             self.cart_count -= self.cart_products[product_id]
             del self.cart_products[product_id]
@@ -356,7 +364,7 @@ def submit():
     price = product_price_var.get()
     count = product_count_var.get()
 
-    if(id!="" and name!="" and price!="" and count!=""):
+    if(id != "" and name != "" and price != "" and count != ""):
         ### The below prints are just for verification, printed on the terminal, replace with the success or failure notification popup ###
         print("The id is : " + id)
         print("The name is : " + name)
@@ -415,7 +423,7 @@ def update_submit():
 
 def delete_submit():
     id = delete_product_id_var.get()
-    if(id!=""):
+    if(id != ""):
         # print("The id is : " + id)
         # id = int(id)
         inventory1.delete_product_in_inventory(id)
@@ -434,7 +442,7 @@ def delete_submit():
 
 def delete_cart_product():
     id = delete_cart_product_id_var.get()
-    if(id!=""):
+    if(id != ""):
         try:
             id = int(id)
             cart1.delete_product_in_cart(id)
@@ -442,7 +450,8 @@ def delete_cart_product():
         except Exception as e:
             print("In deleting product in cart", e.__class__, "occurred.\n")
             error_msg = "Please enter valid values for fields \nValid types: Id:Integer Name:String Price:float StockQty:Integer"
-            tkMesssageBox.showerror("Invalid values for fields entered!", error_msg)
+            tkMesssageBox.showerror(
+                "Invalid values for fields entered!", error_msg)
             return
     else:
         error_msg = "Field cannot be empty!\nPlease enter valid value for product Id"
@@ -450,20 +459,22 @@ def delete_cart_product():
         return
 
 
-### Used to process the total cost of the individual items and finally display the total of all products in the cart
+# Used to process the total cost of the individual items and finally display the total of all products in the cart
 def compute_total_cost_of_products():
     cart_prods = cart1.list_all_products_in_cart()
-    total = 0 
+    total = 0
     text_message = ""
     for id in list(cart_prods.keys()):
         req_prod = inventory1.inventory_products[id]
         single_prod_total = (int(req_prod.product_price)) * (cart_prods[id])
-        text_message += "Total of  " + req_prod.product_name + "  is = " + str(single_prod_total) + "\n"
+        text_message += "Total of  " + req_prod.product_name + \
+            "  is = " + str(single_prod_total) + "\n"
         total += single_prod_total
-    
+
     text_message += "\n\n***Overall TOTAL*** is = " + str(total)
-    tkMesssageBox.showerror("Your total amount for cart products", text_message)
-    return 
+    tkMesssageBox.showerror(
+        "Your total amount for cart products", text_message)
+    return
 # -------------------------------------------------------------------------------------------------------------
 
 
@@ -544,8 +555,9 @@ sub_btn_delete = tk.Button(root, text='Submit', command=delete_submit)
 btn1 = tk.Button(root, text='Quit !', command=root.destroy)
 sub_btn_delete_cart = tk.Button(
     root, text='Submit', command=delete_cart_product)
-### To compute the total amount of the current items existing in the cart 
-total_cost_button = tk.Button(root, text='Compute Total', command=compute_total_cost_of_products)
+# To compute the total amount of the current items existing in the cart
+total_cost_button = tk.Button(
+    root, text='Compute Total', command=compute_total_cost_of_products)
 # -------------------------------------
 # Image labels-------------------------------------
 im0_label = tk.Label(
@@ -628,12 +640,12 @@ text_area = st.ScrolledText(root,
 
 
 def insert_into_text_box():
-    text_area.configure(state ='normal')
+    text_area.configure(state='normal')
     text_area.delete("1.0", "end")
     text = print_cart_products()
     # print("text=",text)
     text_area.insert(tk.INSERT, text)
-    text_area.configure(state ='disabled')
+    text_area.configure(state='disabled')
 
 # ------------------------------------------------------------------------------
 
@@ -650,12 +662,12 @@ text_area_inventory = st.ScrolledText(root,
 
 
 def insert_into_inventory_disp_box():
-    text_area_inventory.configure(state ='normal')
+    text_area_inventory.configure(state='normal')
     text_area_inventory.delete("1.0", "end")
     text = inventory1.list_all_products_in_inventory()
     # print("text=",text)
     text_area_inventory.insert(tk.INSERT, text)
-    text_area_inventory.configure(state ='disabled')
+    text_area_inventory.configure(state='disabled')
 
 # ------------------------------------------------------------------------------
 
@@ -675,7 +687,7 @@ text_area.place(x=600, y=85)
 delete_cart_product_label.place(x=600, y=350)
 delete_cart_product_entry.place(x=750, y=350)
 sub_btn_delete_cart.place(x=650, y=385)
-### compute total button
+# compute total button
 total_cost_button.place(x=710, y=385)
 # ------------------
 
@@ -734,7 +746,11 @@ btn1.grid(row=20, column=5)
 insert_into_inventory_disp_box()
 
 # Making the text read only
-text_area.configure(state ='disabled')
+text_area.configure(state='disabled')
+# Execute Tkinter
+# <<<<<<< patch-3
+# root.mainloop()
+
+text_area.configure(state='disabled')
 
 root.mainloop()
-
